@@ -59,7 +59,6 @@ var client = new Twitter({
     console.log(error);
     });
 
-=======
 var Twitter = require('twitter');
 var ontime = require('ontime');
 
@@ -119,5 +118,3 @@ var client = new Twitter({
   stream.on('error', function(error) {
     console.log(error);
     });
-
->>>>>>> Primero
