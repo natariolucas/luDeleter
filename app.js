@@ -73,7 +73,7 @@ function renovarOnTime (arrrayHorarios) {
  // ------------------------------------STREAM
   var stream = client.stream('statuses/filter', {
       follow: idMyTwitterAcc,
-      track: "~~"
+      track: "-#"
   });
 
   stream.on('data', function(event) { 
