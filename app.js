@@ -77,7 +77,7 @@ function renovarOnTime (arrrayHorarios) {
   });
 
   stream.on('data', function(tweet) { 
-      if ((tweet.text).includes("/>")) {
+      if ((tweet.text).includes("/>") == true) {
         console.log('Tweet added ID: ' + tweet.id_str);
         console.log('Tweet added content' + tweet.text);
         tweetHistoria(tweet);
