@@ -6,7 +6,7 @@ var client = new Twitter({
  consumer_secret: '7h7e6Qrcps6tlyhuXkJbsQ4gqdw9LLlzEcZaQ26jiGqSoVSD8K',
  access_token_key: '1891919095-lLWvCEWKfEEhuvwcxNQlZ0zZpn29a0fwsouUCtk',
  access_token_secret: '5HqyYPYgnPxLHf6lp6cttEzKH5jwJRxlKkTDebYwdB6B2'
- // consumer_key: 'EJeDRXQy1crTvTblYHWDBZAb5',
+ //UBER consumer_key: 'EJeDRXQy1crTvTblYHWDBZAb5',
  // consumer_secret: 'g4xcxd91rVfJkMunNLZrSlaiw4F5QeG1wn90DftVvKwlhSVGIR',
  // access_token_key: '260895654-2B5xGJO5KIwrdo8lj3ldtYjvF9kcsFlr6zb3Av25',
  // access_token_secret: 'Vkut6POrdzFZLKfIbSfQuqFLFToaTQBtlnBBw9P1O4VRv'
@@ -17,6 +17,7 @@ var client = new Twitter({
  const idMyTwitterAcc2 = '260895654' //Uber
  var arrHorarios = [];
  var arrIds = [];
+ var flagNoTweets = false;
 
 var OT;
 const separador = '------------------------------';
@@ -47,22 +48,27 @@ function renovarOnTime (arrrayHorarios) {
     utc: true
   }, function (ot) {
 
-   var twDelete = arrIds[arrrayHorarios[0]];
-   console.log('Tweet a eliminar: ' + twDelete);
-  
-   client.post('statuses/destroy', {id: twDelete}, function (error, response) {
-     if (error) console.log(error);
-     console.log(response)
-   })
+   if (flagNoTweets == false) {
 
-   delete arrIds[formatedDate];
-   //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
-   if (arrHorarios.length == 1) {
-    arrHorarios.shift();
-   } else {
-    arrHorarios.shift();
-   //Renovar los horarios con recursividad
-   renovarOnTime();
+     var twDelete = arrIds[arrrayHorarios[0]];
+     console.log('Tweet a eliminar: ' + twDelete);
+  
+     client.post('statuses/destroy', {id: twDelete}, function (error, response) {
+       if (error) console.log(error);
+       console.log(response)
+     })
+  
+     delete arrIds[formatedDate];
+
+     //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
+     if (arrHorarios.length == 1) {
+      arrHorarios.shift();
+      flagNoTweets = true;
+     } else {
+      arrHorarios.shift();
+      //Renovar los horarios con recursividad
+      renovarOnTime();
+     }
 
    }
 
@@ -79,8 +85,11 @@ function renovarOnTime (arrrayHorarios) {
   stream.on('data', function(tweet) { 
       if ((tweet.text).includes("/&gt;") == true) {
         console.log('Tweet added ID: ' + tweet.id_str);
-        console.log('Tweet added content' + tweet.text);
+        console.log('Tweet added content: ' + tweet.text);
         tweetHistoria(tweet);
+        if (flagNoTweets == true {
+          flagNoTweets = false;
+        }
       } else {
         console.log('Rejected ID: ' + tweet.id_str + ' - content: '  + tweet.text);
       }
