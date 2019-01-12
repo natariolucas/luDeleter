@@ -117,7 +117,7 @@ function formatDateToday (d) {
         console.log('Tweet added ID: ' + tweet.id_str);
         console.log('Tweet added content: ' + tweet.text);
         tweetHistoria(tweet);
-        if (flagNoTweets == true {
+        if (flagNoTweets == true) {
           flagNoTweets = false;
         }
       } else {
