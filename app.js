@@ -23,18 +23,11 @@ var OT;
 const separador = '------------------------------';
 
 function tweetHistoria (tweet) {
-      //Se muestra la fecha actual y se muestra la fecha + 24hs
-      var d = new Date(); 
-      d.setDate(d.getUTCDate());
-      console.log('Fecha: ' + d);
-   
-      d.setDate(d.getDate() + 1); //Suma (1 dia)
-      //getMonth +1 es porque cuenta Enero = 0, Dic = 11
-      var formatedDate = (d.getMonth() + 1).toString() + '-' + (d.getDate()).toString() + 'T' + (d.getHours()).toString() + ':' + (d.getMinutes()).toString() + ':00' ;
-      
-      console.log('Fecha +24: ' + d);
-      console.log('Fecha formateada + 24: ' + formatedDate);
-  
+     
+     //Se muestra la fecha actual y se muestra la fecha + 24hs
+     var today = new Date(); 
+     var formatedDate = formatDatePlus1(today)
+
      arrHorarios.push(formatedDate); //Se agrega la fecha +24hs al array que dispara el ontime
      arrIds[formatedDate] = tweet.id_str; //Se agrega el horario y se asocia a un ID de tweet
   
@@ -56,9 +49,13 @@ function renovarOnTime (arrrayHorarios) {
      client.post('statuses/destroy', {id: twDelete}, function (error, response) {
        if (error) console.log(error);
        console.log(response)
-     })
+     }); //chequear ese punto y coma si esta bien 12/01
   
-     delete arrIds[formatedDate];
+     
+     var tday = new Date();
+     var formatedToday = formatDateToday(tday);
+
+     delete arrIds[formatedToday];
 
      //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
      if (arrHorarios.length == 1) {
@@ -76,6 +73,39 @@ function renovarOnTime (arrrayHorarios) {
     return
   })
 }
+
+function formatDatePlus1 (d) {
+  //d is date
+ 
+  d.setDate(d.getUTCDate());
+  console.log('Fecha: ' + d);
+
+  d.setDate(d.getDate() + 1); //Suma (1 dia)
+  //getMonth +1 es porque cuenta Enero = 0, Dic = 11
+  var fDate = (d.getMonth() + 1).toString() + '-' + (d.getDate()).toString() + 'T' + (d.getHours()).toString() + ':' + (d.getMinutes()).toString() + ':00' ;
+    
+  console.log('Fecha +24: ' + d);
+  console.log('Fecha formateada + 24: ' + fDate);
+
+  return fDate;
+  
+}
+
+
+function formatDateToday (d) {
+  //d is date
+ 
+  d.setDate(d.getUTCDate());
+  console.log('Fecha OT: ' + d);
+   
+  d.setDate(d.getDate());
+  //getMonth +1 es porque cuenta Enero = 0, Dic = 11
+  var fDate = (d.getMonth() + 1).toString() + '-' + (d.getDate()).toString() + 'T' + (d.getHours()).toString() + ':' + (d.getMinutes()).toString() + ':00' ;
+  console.log('Fecha OT formateada: ' + fDate);
+  return fDate;
+  
+}
+
 
  // ------------------------------------STREAM
   var stream = client.stream('statuses/filter', {
