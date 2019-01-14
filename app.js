@@ -2,14 +2,14 @@ var Twitter = require('twitter');
 var ontime = require('ontime');
 
 var client = new Twitter({
- consumer_key: 'vXUKKXfpl3i7KelwkX5dTfgac',
- consumer_secret: '7h7e6Qrcps6tlyhuXkJbsQ4gqdw9LLlzEcZaQ26jiGqSoVSD8K',
- access_token_key: '1891919095-lLWvCEWKfEEhuvwcxNQlZ0zZpn29a0fwsouUCtk',
- access_token_secret: '5HqyYPYgnPxLHf6lp6cttEzKH5jwJRxlKkTDebYwdB6B2'
- //UBER consumer_key: 'EJeDRXQy1crTvTblYHWDBZAb5',
- // consumer_secret: 'g4xcxd91rVfJkMunNLZrSlaiw4F5QeG1wn90DftVvKwlhSVGIR',
- // access_token_key: '260895654-2B5xGJO5KIwrdo8lj3ldtYjvF9kcsFlr6zb3Av25',
- // access_token_secret: 'Vkut6POrdzFZLKfIbSfQuqFLFToaTQBtlnBBw9P1O4VRv'
+ //LUCASconsumer_key: 'vXUKKXfpl3i7KelwkX5dTfgac',
+ //consumer_secret: '7h7e6Qrcps6tlyhuXkJbsQ4gqdw9LLlzEcZaQ26jiGqSoVSD8K',
+ //access_token_key: '1891919095-lLWvCEWKfEEhuvwcxNQlZ0zZpn29a0fwsouUCtk',
+ //access_token_secret: '5HqyYPYgnPxLHf6lp6cttEzKH5jwJRxlKkTDebYwdB6B2'
+ consumer_key: 'EJeDRXQy1crTvTblYHWDBZAb5',
+ consumer_secret: 'g4xcxd91rVfJkMunNLZrSlaiw4F5QeG1wn90DftVvKwlhSVGIR',
+ access_token_key: '260895654-2B5xGJO5KIwrdo8lj3ldtYjvF9kcsFlr6zb3Av25',
+ access_token_secret: 'Vkut6POrdzFZLKfIbSfQuqFLFToaTQBtlnBBw9P1O4VRv'
 });
 
  //const idTweetDecision = '1075178276870602752';
@@ -109,17 +109,17 @@ function formatDateToday (d) {
 
  // ------------------------------------STREAM
   var stream = client.stream('statuses/filter', {
-      follow: idMyTwitterAcc
+      follow: idMyTwitterAcc2
   });
 
   stream.on('data', function(tweet) { 
       if ((tweet.text).includes("/&gt;") == true) {
         console.log('Tweet added ID: ' + tweet.id_str);
         console.log('Tweet added content: ' + tweet.text);
-        tweetHistoria(tweet);
         if (flagNoTweets == true) {
           flagNoTweets = false;
         }
+      tweetHistoria(tweet);
       } else {
         console.log('Rejected ID: ' + tweet.id_str + ' - content: '  + tweet.text);
       }
