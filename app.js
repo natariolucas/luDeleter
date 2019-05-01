@@ -22,15 +22,20 @@ var client = new Twitter({
 var OT;
 const separador = '------------------------------';
 
-function tweetHistoria (tweet) {
+function addTweetStorie (tweet) {
      
      //Se muestra la fecha actual y se muestra la fecha + 24hs
      var today = new Date(); 
      var formatedDate = formatDatePlus1(today)
 
      arrHorarios.push(formatedDate); //Se agrega la fecha +24hs al array que dispara el ontime
-     arrIds[formatedDate] = tweet.id_str; //Se agrega el horario y se asocia a un ID de tweet
-  
+     var index  = arrHorarios.indexOf(formatedDate);
+     arrIds[index] = tweet.id_str; //Se agrega el horario y se asocia a un ID de tweet
+     
+     console.log("Index de PUSH: " + index);
+     console.log("Este es el array de horarios: " + arrHorarios);  
+     console.log("Este es el array de IDS: " + arrIds);  
+     
      renovarOnTime(arrHorarios);
 }
 
@@ -41,33 +46,37 @@ function renovarOnTime (arrrayHorarios) {
     utc: true
   }, function (ot) {
 
-   if (flagNoTweets == false) {
+      if (flagNoTweets == false) {
 
-     var twDelete = arrIds[arrrayHorarios[0]];
-     console.log('Tweet a eliminar: ' + twDelete);
-  
-     client.post('statuses/destroy', {id: twDelete}, function (error, response) {
-       if (error) console.log(error);
-       console.log(response)
-     }); //chequear ese punto y coma si esta bien 12/01
-  
-     
-     var tday = new Date();
-     var formatedToday = formatDateToday(tday);
+        // 
+       var twDelete = arrIds[arrrayHorarios[0]];
+       console.log('Tweet a eliminar: ' + twDelete);
+    
+       client.post('statuses/destroy', {id: twDelete}, function (error, response) {
+         if (error) console.log(error);
+         console.log(response)
+       }); //chequear ese punto y coma si esta bien 12/01
+    
+       
+       var tday = new Date();
+       var formatedToday = formatDateToday(tday);
 
-     delete arrIds[formatedToday];
+       var index = arrHorarios.indexOf(formatedToday);
+       delete arrIds[index];
 
-     //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
-     if (arrHorarios.length == 1) {
-      arrHorarios.shift();
-      flagNoTweets = true;
-     } else {
-      arrHorarios.shift();
-      //Renovar los horarios con recursividad
-      renovarOnTime();
-     }
-
-   }
+       //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
+        if (arrHorarios.length == 1) {
+          delete arrHorarios[index];
+          flagNoTweets = true;
+        } else {
+        arrHorarios.shift();
+        //Renovar los horarios con recursividad
+        renovarOnTime(arrHorarios);
+        console.log("Se renueva el ontime con el array: " + arrHorarios)
+      } else {
+        console.log("Se ejecutó el ontime con el horario fantasma");
+      }
+    }
 
     ot.done()
     return
@@ -106,6 +115,34 @@ function formatDateToday (d) {
   
 }
 
+function forceDestroy(idTweet) {
+  var twDelete = idTweet;
+  console.log("Se fuerza destroy de ID: " + twDelete);
+  
+
+  client.post('statuses/destroy', {id: twDelete}, function (error, response) {
+   if (error) console.log(error);
+   console.log(response)
+  }); //chequear ese punto y coma si esta bien 12/01
+
+
+  var tday = new Date();
+  var formatedToday = formatDateToday(tday);
+
+  var index = arrHorarios.indexOf(formatedToday);
+  delete arrIds[index];
+
+  //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
+  if (arrHorarios.length == 1) {
+    delete arrHorarios[index];
+    flagNoTweets = true;
+  } else {
+    arrHorarios.shift();
+    //Renovar los horarios con recursividad
+    renovarOnTime(arrHorarios);
+    console.log("Se renueva el ontime con el array: " + arrHorarios)
+  }
+}
 
  // ------------------------------------STREAM
   var stream = client.stream('statuses/filter', {
@@ -116,10 +153,18 @@ function formatDateToday (d) {
       if ((tweet.text).includes("/&gt;") == true) {
         console.log('Tweet added ID: ' + tweet.id_str);
         console.log('Tweet added content: ' + tweet.text);
-        if (flagNoTweets == true) {
+        if (flagNoTweets == true)  {
           flagNoTweets = false;
         }
-      tweetHistoria(tweet);
+       addTweetStorie(tweet);
+      } else if ((tweet.text).includes("?"+"/&gt;") == true) {
+
+        var explodedText = (tweet.text).split("?");
+        var idToDelete = explodedText[0];
+        console.log('Tweet to delete: ' + idToDelete);
+
+        forceDestroy(idToDelete);
+
       } else {
         console.log('Rejected ID: ' + tweet.id_str + ' - content: '  + tweet.text);
       }
