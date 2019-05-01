@@ -149,14 +149,8 @@ function forceDestroy(idTweet) {
   });
 
   stream.on('data', function(tweet) { 
-      if ((tweet.text).includes("/&gt;") == true) {
-        console.log('Tweet added ID: ' + tweet.id_str);
-        console.log('Tweet added content: ' + tweet.text);
-        if (flagNoTweets == true)  {
-          flagNoTweets = false;
-        }
-       addTweetStorie(tweet);
-      } else if ((tweet.text).includes("?"+"/&gt;") == true) {
+
+     if ((tweet.text).includes("?"+"/&gt;") == true) {
 
         var explodedText = (tweet.text).split("?");
         var idToDelete = explodedText[0];
@@ -164,7 +158,14 @@ function forceDestroy(idTweet) {
 
         forceDestroy(idToDelete);
 
-      } else {
+      } else if ((tweet.text).includes("/&gt;") == true) {
+        console.log('Tweet added ID: ' + tweet.id_str);
+        console.log('Tweet added content: ' + tweet.text);
+        if (flagNoTweets == true)  {
+          flagNoTweets = false;
+        }
+       addTweetStorie(tweet);
+      } else{
         console.log('Rejected ID: ' + tweet.id_str + ' - content: '  + tweet.text);
       }
 
