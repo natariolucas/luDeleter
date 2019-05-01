@@ -62,7 +62,7 @@ function renovarOnTime (arrrayHorarios) {
        var formatedToday = formatDateToday(tday);
 
        var index = arrHorarios.indexOf(formatedToday);
-       delete arrIds[index];
+       arrIds.splice(index, 1);
 
        //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
         if (arrHorarios.length == 1) {
@@ -114,26 +114,40 @@ function formatDateToday (d) {
   
 }
 
-function forceDestroy(idTweet) {
+function forceDestroy(idTweet,deleterCallerId) {
   var twDelete = idTweet;
+  var twCaller = deleterCallerId;
   console.log("Se fuerza destroy de ID: " + twDelete);
   
 
   client.post('statuses/destroy', {id: twDelete}, function (error, response) {
-   if (error) console.log(error);
-   console.log(response)
-  }); //chequear ese punto y coma si esta bien 12/01
+   if (error) {
+    console.log("ERROR EN DESTROY DESDE FORCEDESTROY idTweet");
+    console.log(error)
+  };
+   console.log("RESPONSETODELETE" + response)
+  });
 
+  client.post('statuses/destroy', {id: twCaller}, function (error, response) {
+   if (error) {
+    console.log("ERROR EN DESTROY DESDE FORCEDESTROY CALLER");
+    console.log(error)
+  };
+   console.log("RESPONSECALLER" + response)
+  });
 
-  var tday = new Date();
-  var formatedToday = formatDateToday(tday);
+  var index = arrIds.indexOf(idTweet);
 
-  var index = arrHorarios.indexOf(formatedToday);
-  delete arrIds[index];
+  console.log("arrIds["+index+"] before delete =" + arrIds[index]);
+  arrIds.splice(index, 1);
+  console.log("delete de arrIds["+index+"] from forceDestroy, new value =" + arrIds[index]);
 
   //Condicional para que si queda el array vacio no se lo muestre al ontime (renueve)
   if (arrHorarios.length == 1) {
-    delete arrHorarios[index];
+    console.log("LENGTH 1");
+    console.log("arrHorarios["+index+"] before delete =" + arrHorarios[index]); 
+    arrHorarios.splice(index, 1);
+    console.log("delete de arrHorarios["+index+"] from force destroy, new value ="+arrHorarios[index]);
     flagNoTweets = true;
   } else {
     arrHorarios.shift();
@@ -141,6 +155,9 @@ function forceDestroy(idTweet) {
     renovarOnTime(arrHorarios);
     console.log("Se renueva el ontime con el array: " + arrHorarios)
   }
+
+  console.log("Nuevo arrIds: " + arrIds);
+  console.log("Nuevo arrHorarios: " + arrHorarios);
 }
 
  // ------------------------------------STREAM
@@ -156,7 +173,7 @@ function forceDestroy(idTweet) {
         var idToDelete = explodedText[0];
         console.log('Tweet to delete: ' + idToDelete);
 
-        forceDestroy(idToDelete);
+        forceDestroy(idToDelete,tweet.id_str);
 
       } else if ((tweet.text).includes("/&gt;") == true) {
         console.log('Tweet added ID: ' + tweet.id_str);
@@ -169,9 +186,10 @@ function forceDestroy(idTweet) {
         console.log('Rejected ID: ' + tweet.id_str + ' - content: '  + tweet.text);
       }
 
-      console.log(separador);
+      console.log(separador + "separador");
   });
 
   stream.on('error', function(error) {
+    console.log("ERROR--------------------------------------------");
     console.log(error);
     });
