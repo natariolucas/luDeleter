@@ -69,15 +69,14 @@ function renovarOnTime (arrrayHorarios) {
           delete arrHorarios[index];
           flagNoTweets = true;
         } else {
-        arrHorarios.shift();
-        //Renovar los horarios con recursividad
-        renovarOnTime(arrHorarios);
-        console.log("Se renueva el ontime con el array: " + arrHorarios)
+          arrHorarios.shift();
+          //Renovar los horarios con recursividad
+          renovarOnTime(arrHorarios);
+          console.log("Se renueva el ontime con el array: " + arrHorarios)
+        }
       } else {
         console.log("Se ejecutó el ontime con el horario fantasma");
       }
-    }
-
     ot.done()
     return
   })
