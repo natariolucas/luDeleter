@@ -22,7 +22,7 @@ stream.init = () => {
 
         // Look for the twitter account, allowing to listen, and confirmed account
         const rows = await pool.query(`SELECT 
-                                 Id, IdUser 
+                                 Id, IdUser, MinutesToDelete
                             FROM UsersTwitterAccounts AS UTA 
                             WHERE
                                     UTA.IdAccountApiTwitter = ? AND 
@@ -47,7 +47,8 @@ stream.init = () => {
             IdUserTwitterAccount: rows[0].Id,
             IdTweetApiTwitter: id_str,
             Text: text,
-            IdStatus: tweetsStatuses.PENDING
+            IdStatus: tweetsStatuses.PENDING,
+            MinutesToDelete: rows[0].MinutesToDelete
         };
 
         const result = await pool.query('INSERT INTO UsersTwitterAccountsTweets SET ?', [newTweet]);
@@ -67,11 +68,12 @@ stream.init = () => {
                                         SELECT 
                                             Id, 
                                             IdTweetApiTwitter, 
-                                            TIMESTAMPDIFF(MINUTE,CreatedAt, NOW()) AS MinutesSinceCreated 
+                                            TIMESTAMPDIFF(MINUTE,CreatedAt, NOW()) AS MinutesSinceCreated, 
+                                            MinutesToDelete
                                         FROM UsersTwitterAccountsTweets
                                         WHERE IdStatus = ? ) AS t1
                         WHERE 
-                        t1.MinutesSinceCreated >= ?`, [tweetsStatuses.PENDING, minutesToDelete]);
+                        t1.MinutesSinceCreated >= MinutesToDelete`, [tweetsStatuses.PENDING]);
 
             if(rows.length < 1) {
                 console.log('# No tweets to delete.');
