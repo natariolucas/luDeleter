@@ -8,9 +8,20 @@ const mysqlStore = require('express-mysql-session');
 const { database } = require('./keys');
 const passport = require('passport');
 
+// Adding timestamp to every console.log
+var log = console.log;
+var date = "[" + new Date().toISOString() + "]";
+console.log = function(){
+    log.apply(console, [date].concat(arguments[0]));
+};
+
+// Starting twitter stream
+const stream = require('./stream.js');
+
 // initializations
 const app = express();
 require('./lib/passport');
+stream.init();
 
 // settings
 app.set('port', process.env.PORT || 4000);
@@ -42,22 +53,24 @@ app.use(passport.session());
 app.use((req, res, next) => {
     app.locals.success = req.flash('exito');
     app.locals.failure = req.flash('fallo');
-    app.locals.user = req.user
+    app.locals.user = req.user;
    next();
 });
 
 // Routes
 app.use(require('./routes/index.js'));
 app.use(require('./routes/authentication.js'));
-app.use('/links', require('./routes/links.js'));
+// app.use('/links', require('./routes/links.js'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Starting the server
 app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
+    console.log('## Server on port', app.get('port'));
 });
+
+
 
 
 

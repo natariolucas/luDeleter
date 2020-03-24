@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node app.js"
-
   },
   "author": "",
   "license": "ISC",
@@ -20,11 +19,11 @@
     "express-validator": "^6.4.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
+    "ontime": "0.0.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "timeago.js": "^4.0.2",
-    "ontime": "0.0.4",
-    "twitter": "1.7.1"
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

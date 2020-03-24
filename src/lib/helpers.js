@@ -18,4 +18,14 @@ helpers.matchPassword = async (password, savedPassword) => {
   }
 };
 
+helpers.matchTweetCondition = (tweet) => {
+    var myregexp = /^\$\s/;
+    var match = myregexp.exec(tweet);
+
+    if (match === null)
+        return false;
+    else
+        return true;
+};
+
 module.exports = helpers;
