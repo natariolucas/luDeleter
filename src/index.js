@@ -10,8 +10,9 @@ const passport = require('passport');
 
 // Adding timestamp to every console.log
 var log = console.log;
-var date = "[" + new Date().toISOString() + "]";
 console.log = function(){
+    var date = "[" + new Date().toISOString() + "]";
+
     log.apply(console, [date].concat(arguments[0]));
 };
 

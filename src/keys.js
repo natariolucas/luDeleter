@@ -18,9 +18,14 @@ module.exports = {
         CONFIRMED_ACCOUNT: 1,
         NOT_CONFIRMED_ACCOUNT: 2
     },
+    tweetsStatuses: {
+      PENDING: 1,
+      DELETED_BY_MINUTES: 2
+    },
     statuses: {
         ACTIVE: 10,
         NO_ACTIVE: 30,
         DELETED: 90
-    }
+    },
+    minutesToDelete: 1
 };
