@@ -8,8 +8,6 @@ module.exports = {
     twitterCredentials: {
         consumer_key: 'rmTC6s8kJblotO3dIqeSjkALU',
         consumer_secret: '9n96i8YrVy1ROvSNnstNnLJ3epRnEDBLVjSZIYZ5LI0Xhcpif3',
-        access_token_key: '1891919095-JysI27wVTXdObIZqhNi8SZMdj0sJ9wznKhWvnwQ',
-        access_token_secret: 'nlYQKAlUqc57JsLl0eA52bIu4Wxafymnl9aGeCVkkjXqJ'
     },
     idTwitterAccounts: {
         Lucas: 1891919095
@@ -27,5 +25,6 @@ module.exports = {
         NO_ACTIVE: 30,
         DELETED: 90
     },
-    minutesToDelete: 1
+    minutesToDelete: 1,
+    delimiterRegexp: /^\$\s/
 };

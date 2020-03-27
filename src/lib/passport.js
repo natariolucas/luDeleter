@@ -1,7 +1,9 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 const pool = require('../database');
 const helpers = require('../lib/helpers');
+const { twitterCredentials } = require('../keys');
 
 passport.use('local.signin', new LocalStrategy({
     usernameField: 'username',
@@ -13,8 +15,6 @@ passport.use('local.signin', new LocalStrategy({
     if(rows.length > 0) {
         const user = rows[0];
         const validPassword = await helpers.matchPassword(password, user.Password);
-        console.log('VALID');
-        console.log(validPassword);
         if(validPassword) return done(null, user, req.flash('exito', 'Welcome' + user.Username));
         else return done(null, false, req.flash('fallo', 'Incorrect username or password'))
     } else {
@@ -37,6 +37,33 @@ passport.use('local.signup', new LocalStrategy({
 
     newUser.Id = result.insertId;
     return done(null, newUser); //Ejecuta luego el success o failure del objeto passport
+}));
+
+passport.use('twitter.signin', new TwitterStrategy({
+    consumerKey: twitterCredentials.consumer_key,
+    consumerSecret: twitterCredentials.consumer_secret,
+    callBackUrl: '/profile',
+    passReqToCallback: true
+}, async (req, token, tokenSecret, profile, done) => {
+    // Check if the twitter account already exists
+    const rowsValidation = await pool.query("SELECT * FROM UsersTwitterAccounts AS UTA WHERE UTA.IdAccountApiTwitter = ?", [profile._json.id_str]);
+
+    // If already exists, continue to the website.
+    if(rowsValidation.length > 0)
+        return done(null, req.user);
+
+    // If doesn't exists, add it to the database and continue.
+    const newAccount = {
+        IdUser: req.user.Id,
+        Token: token,
+        TokenSecret: tokenSecret,
+        IdAccountApiTwitter: profile._json.id_str,
+        Username: profile._json.screen_name,
+        Displayname: profile._json.name
+    };
+    await pool.query("INSERT INTO UsersTwitterAccounts SET ?", [newAccount]);
+
+    return done(null, req.user);
 }));
 
 passport.serializeUser((user,done) => {

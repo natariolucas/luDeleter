@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-
+const {delimiterRegexp} = require('../keys.js');
 const helpers = {};
 
 helpers.encryptPassword = async (password) => {
@@ -19,9 +19,7 @@ helpers.matchPassword = async (password, savedPassword) => {
 };
 
 helpers.matchTweetCondition = (tweet) => {
-    var myregexp = /^\$\s/;
-    var match = myregexp.exec(tweet);
-
+    var match = delimiterRegexp.exec(tweet);
     if (match === null)
         return false;
     else

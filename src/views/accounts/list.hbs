@@ -1,18 +1,25 @@
 <div class="container p-4">
     <div class="row">
-        {{#each links}}
+        {{#each accounts}}
             <div class="col-md-3">
                 <div class="card text-center">
+                    <div class="card-header">
+                        {{#if AllowToListen}}
+                            <h5>Story stream: Enabled</h5>
+                        {{else}}
+                            <h5>Story stream: Disabled</h5>
+                        {{/if}}
+                    </div>
                     <div class="card-body">
-                        <a href="{{Url}}" target="_blank">
-                            <h3 class="card-title text-uppercase">
-                                {{Title}}
+                        <a href="https://twitter.com/{{Username}}" target="_blank">
+                            <h3 class="card-title">
+                                {{Displayname}}
                             </h3>
                         </a>
-                        <p class="m-2" >{{Description}}</p>
-                        <p>{{timeago CreatedAt}}</p>
-                        <a href="/links/delete/{{Id}}" class="btn btn-danger">Delete link</a>
-                        <a href="/links/edit/{{Id}}" class="btn btn-secondary">Edit</a>
+                        <p class="m-2" >@{{Username}}</p>
+                        <a href="/tweets/account/{{Id}}" class="btn btn-success btn-block">Tweets received</a>
+                        <a href="/accounts/edit/{{Id}}" class="btn btn-secondary btn-block">Settings</a>
+                        <a href="https://twitter.com/settings/applications" class="btn btn-danger btn-block">Delete account</a>
                     </div>
                 </div>
             </div>

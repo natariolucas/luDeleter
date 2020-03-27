@@ -5,8 +5,9 @@ const path = require('path');
 const flash = require('connect-flash');
 const session = require('express-session');
 const mysqlStore = require('express-mysql-session');
-const { database } = require('./keys');
+const { database, delimiterRegexp } = require('./keys');
 const passport = require('passport');
+const stream = require('./stream.js');
 
 // Adding timestamp to every console.log
 var log = console.log;
@@ -16,13 +17,11 @@ console.log = function(){
     log.apply(console, [date].concat(arguments[0]));
 };
 
-// Starting twitter stream
-const stream = require('./stream.js');
-
 // initializations
 const app = express();
 require('./lib/passport');
 stream.init();
+
 
 // settings
 app.set('port', process.env.PORT || 4000);
@@ -54,6 +53,7 @@ app.use(passport.session());
 app.use((req, res, next) => {
     app.locals.success = req.flash('exito');
     app.locals.failure = req.flash('fallo');
+    app.locals.delimiter = delimiterRegexp;
     app.locals.user = req.user;
    next();
 });
@@ -62,6 +62,7 @@ app.use((req, res, next) => {
 app.use(require('./routes/index.js'));
 app.use(require('./routes/authentication.js'));
 app.use('/accounts', require('./routes/accounts.js'));
+app.use('/tweets', require('./routes/tweets.js'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));
@@ -70,7 +71,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.listen(app.get('port'), () => {
     console.log('## Server on port', app.get('port'));
 });
-
 
 
 

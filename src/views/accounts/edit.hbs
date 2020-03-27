@@ -2,18 +2,32 @@
     <div class="row">
         <div class="col-md-4 mx-auto">
             <div class="card">
+                <div class="card-header text-center">
+                    <h2>{{account.Displayname}}</h2>
+                    <h5>@{{account.Username}}</h5>
+                </div>
                 <div class="card-body">
-                    <form action="/links/edit/{{link.Id}}" method="POST">
+                    <form action="/accounts/edit/{{account.Id}}" method="POST">
                         <div class="form-group">
-                            <input value="{{link.Title}}" type="text" class="form-control" name="title" placeholder="Title" autofocus>
+                            <input value="{{account.MinutesToDelete}}" type="number" class="form-control" name="minutesToDelete" placeholder="Minutes to delete tweet" autofocus>
                         </div>
 
                         <div class="form-group">
-                            <input value="{{link.Url}}" type="url" name="url" class="form-control" placeholder="URL">
+                            <div class="form-check">
+                                <input class="form-check-input" {{account.AllowToListen}} type="checkbox" name="allowToListen" id="AllowToListen">
+                                <label class="form-check-label" for="AllowToListen">
+                                    Enable story stream
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <textarea name="description" rows="2" class="form-control" placeholder="Description">{{link.Description}}</textarea>
+                            <div class="form-check">
+                                <input class="form-check-input" {{account.ReplyTweets}} type="checkbox" name="replyTweets" id="ReplyTweets">
+                                <label class="form-check-label" for="ReplyTweets">
+                                    Reply tweets automatically
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
