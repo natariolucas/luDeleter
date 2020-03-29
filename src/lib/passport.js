@@ -27,6 +27,12 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
+    const rows = await pool.query("SELECT * FROM Users WHERE Username = ?", [username]);
+
+    if(rows.length > 0 ){
+        return done(null, false, req.flash('fallo', 'Username already in use'));
+    }
+
     const newUser = {
         Username: username,
         Password : await helpers.encryptPassword(password),
@@ -52,6 +58,10 @@ passport.use('twitter.signin', new TwitterStrategy({
     if(rowsValidation.length > 0)
         return done(null, req.user);
 
+    var myregexp = /([A-Za-z])/;
+    var match = myregexp.exec(profile._json.name);
+    const displayname = match[1];
+
     // If doesn't exists, add it to the database and continue.
     const newAccount = {
         IdUser: req.user.Id,
@@ -59,7 +69,7 @@ passport.use('twitter.signin', new TwitterStrategy({
         TokenSecret: tokenSecret,
         IdAccountApiTwitter: profile._json.id_str,
         Username: profile._json.screen_name,
-        Displayname: profile._json.name
+        Displayname: displayname
     };
     await pool.query("INSERT INTO UsersTwitterAccounts SET ?", [newAccount]);
 

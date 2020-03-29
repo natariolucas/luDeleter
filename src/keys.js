@@ -1,13 +1,14 @@
+require('dotenv').config();
 module.exports = {
     database: {
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'dev_links'
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB
     },
     twitterCredentials: {
-        consumer_key: 'rmTC6s8kJblotO3dIqeSjkALU',
-        consumer_secret: '9n96i8YrVy1ROvSNnstNnLJ3epRnEDBLVjSZIYZ5LI0Xhcpif3',
+        consumer_key: process.env.CONSUMER_KEY,
+        consumer_secret: process.env.CONSUMER_SECRET,
     },
     idTwitterAccounts: {
         Lucas: 1891919095

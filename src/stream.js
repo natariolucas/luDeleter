@@ -32,15 +32,6 @@ const stream = {
             return;
         }
 
-        if(rows[0].ReplyTweets === 1){
-            var status = "[luDeleter BOT] This tweet has "+rows[0].MinutesToDelete+" minutes to live";
-            console.log("# replied tweet");
-            clientAdmin.post('statuses/update', {status: status, in_reply_to_status_id: id_str}, function (error, response) {
-                if (error) console.log(error);
-            });
-
-        }
-
         //Insert a newTweet
         const newTweet = {
             IdUser: rows[0].IdUser,
@@ -53,6 +44,28 @@ const stream = {
 
         const result = await pool.query('INSERT INTO UsersTwitterAccountsTweets SET ?', [newTweet]);
         console.log('# Inserted Tweet (Id: '+result.insertId+') - (IdTweetApi: '+ newTweet.IdTweetApiTwitter +') - (IdUser: '+newTweet.IdUser+')');
+
+        if(rows[0].ReplyTweets === 1){
+            var status = "[luDeleter BOT] This tweet has "+rows[0].MinutesToDelete+" minutes to live";
+            console.log("# replied tweet");
+            await clientAdmin.post('statuses/update', {status: status, in_reply_to_status_id: id_str}, async function (error, response) {
+                if (error) console.log(error);
+
+                var replyIdTweet = response.id_str;
+
+                const newReply = {
+                    IdUser: rows[0].IdUser,
+                    IdUserTwitterAccountTweetFather: result.insertId,
+                    IdUserTwitterAccount: rows[0].Id,
+                    IdTweetApiTwitter: replyIdTweet,
+                    Text: status,
+                    IdStatus: tweetsStatuses.PENDING,
+                    MinutesToDelete: rows[0].MinutesToDelete
+                };
+                await pool.query('INSERT INTO UsersTwitterAccountsTweets SET ?', [newReply]);
+
+            });
+        }
     },
     async startTweetChecker() {
         this.tweetChecker(true);

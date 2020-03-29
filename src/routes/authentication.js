@@ -19,7 +19,7 @@ router.post('/signin', isNotLoggedIn, (req, res, next) => {
 });
 
 // router.post('/signup', isNotLoggedIn, passport.authenticate('local.signup', {
-router.post('/signup', false, passport.authenticate('local.signup', {
+router.post('/signup', isNotLoggedIn, passport.authenticate('local.signup', {
     successRedirect: '/profile',
     failureRedirect: '/signup',
     failureFlash: true
