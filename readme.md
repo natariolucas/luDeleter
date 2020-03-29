@@ -1,11 +1,3 @@
-PRIMERA VERSION:
- Con un usuario quemado.
- A 10 minutos fijos.
- Se va a poder activar o desactivar el stream.
- 
- 
- 
- 
  
  =========================== PRIVACY POLICY ================== <br>
  All the passwords put in the account will be saved in bcrypt way.
