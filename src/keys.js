@@ -10,9 +10,6 @@ module.exports = {
         consumer_key: process.env.CONSUMER_KEY,
         consumer_secret: process.env.CONSUMER_SECRET,
     },
-    idTwitterAccounts: {
-        Lucas: 1891919095
-    },
     twitterAccountsStatuses: {
         CONFIRMED_ACCOUNT: 1,
         NOT_CONFIRMED_ACCOUNT: 2
