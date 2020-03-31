@@ -16,7 +16,8 @@ module.exports = {
     },
     tweetsStatuses: {
       PENDING: 1,
-      DELETED_BY_MINUTES: 2
+      DELETED_BY_MINUTES: 2,
+      NOT_FOUND: 3
     },
     statuses: {
         ACTIVE: 10,

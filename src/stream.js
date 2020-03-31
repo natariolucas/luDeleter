@@ -62,6 +62,7 @@ const stream = {
                     IdStatus: tweetsStatuses.PENDING,
                     MinutesToDelete: rows[0].MinutesToDelete
                 };
+
                 await pool.query('INSERT INTO UsersTwitterAccountsTweets SET ?', [newReply]);
 
             });
@@ -115,8 +116,13 @@ const stream = {
                 const clientAdmin = new Twitter(credentials);
 
                 // Delete tweet via twitter API
-                clientAdmin.post('statuses/destroy', {id: item.IdTweetApiTwitter}, function (error, response) {
-                    if (error) console.log(error);
+                clientAdmin.post('statuses/destroy', {id: item.IdTweetApiTwitter}, async function (error, response) {
+                    if (error) {
+                        if(error[0].code === 144) {
+                            await pool.query('UPDATE UsersTwitterAccountsTweets SET IdStatus = ? WHERE Id = ?', [tweetsStatuses.NOT_FOUND, item.Id])
+                        }
+                        console.log(error);
+                    }
                 });
 
                 // Change status from database
